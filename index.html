@@ -1,216 +1,200 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>التطبيق الرمضاني</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<meta charset="UTF-8">
+<title>التطبيق الرمضاني</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-  <style>
-    body {
-      margin: 0;
-      font-family: "Segoe UI", sans-serif;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      color: #fff;
-    }
+<style>
+body{
+  margin:0;
+  font-family:"Segoe UI",sans-serif;
+  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  color:#fff;
+}
+.container{padding:20px}
+h1{text-align:center;margin-bottom:20px}
 
-    .container {
-      padding: 20px;
-    }
+.nav-buttons{
+  display:flex;
+  gap:10px;
+  margin-bottom:20px
+}
+.nav-buttons button{
+  flex:1;
+  padding:12px;
+  font-size:14px;
+  border-radius:10px;
+  border:none;
+  font-weight:bold;
+  cursor:pointer
+}
+.imsakiya-btn{background:#f9a825}
+.dua-btn{background:#9b59b6;color:#fff}
+.aamal-btn{background:#03a9f4;color:#fff}
 
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
+select,.action-btn{
+  width:100%;
+  padding:12px;
+  margin-top:12px;
+  font-size:15px;
+  border-radius:10px;
+  border:none
+}
+select{background:#fff;color:#000}
+.action-btn{background:#1abc9c;font-weight:bold}
+.back-btn{background:#607d8b;color:#fff}
 
-    /* أزرار القائمة الرئيسية */
-    .nav-buttons {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
+.box{
+  margin-top:20px;
+  background:rgba(255,255,255,0.1);
+  border-radius:12px;
+  padding:15px;
+  display:none
+}
 
-    .nav-buttons button {
-      flex: 1;
-      padding: 12px;
-      font-size: 15px;
-      border-radius: 10px;
-      border: none;
-      font-weight: bold;
-      cursor: pointer;
-    }
+table{width:100%;border-collapse:collapse}
+td{padding:8px;border-bottom:1px solid rgba(255,255,255,.2)}
+td:last-child{text-align:left}
 
-    .imsakiya-btn { background: #f9a825; }
-    .dua-btn { background: #9b59b6; color: #fff; }
-
-    select, .action-btn {
-      width: 100%;
-      padding: 12px;
-      margin-top: 12px;
-      font-size: 15px;
-      border-radius: 10px;
-      border: none;
-    }
-
-    select { background: #fff; color: #000; }
-
-    .action-btn {
-      background: #1abc9c;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .back-btn {
-      background: #607d8b;
-      color: #fff;
-      margin-top: 15px;
-    }
-
-    .table-box, .dua-box {
-      margin-top: 20px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 12px;
-      padding: 15px;
-      display: none;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    td {
-      padding: 8px;
-      border-bottom: 1px solid rgba(255,255,255,0.2);
-    }
-
-    td:last-child {
-      text-align: left;
-    }
-
-    .dua {
-      line-height: 1.9;
-      font-size: 16px;
-    }
-
-    .day-label {
-      margin-bottom: 10px;
-      font-weight: bold;
-      color: #ffd54f;
-    }
-  </style>
+.day-btn{
+  background:#3949ab;
+  color:#fff;
+  margin-top:8px
+}
+</style>
 </head>
 
 <body>
 <div class="container">
 
-  <h1>🌙 التطبيق الرمضاني</h1>
+<h1>🌙 التطبيق الرمضاني</h1>
 
-  <!-- القائمة الرئيسية -->
-  <div class="nav-buttons" id="mainMenu">
-    <button class="imsakiya-btn" onclick="openImsakiya()">الإمساكية</button>
-    <button class="dua-btn" onclick="openDuas()">دعاء اليوم</button>
+<!-- القائمة الرئيسية -->
+<div class="nav-buttons" id="mainMenu">
+  <button class="imsakiya-btn" onclick="openImsakiya()">الإمساكية</button>
+  <button class="dua-btn" onclick="openDuas()">دعاء اليوم</button>
+  <button class="aamal-btn" onclick="openAamal()">أعمال الشهر</button>
+</div>
+
+<!-- الإمساكية -->
+<div id="imsakiyaSection" class="box">
+  <label>اختر المحافظة</label>
+  <select id="city">
+    <option value="">— اختر —</option>
+    <option value="najaf">النجف</option>
+    <option value="karbala">كربلاء</option>
+    <option value="baghdad">بغداد</option>
+    <option value="basra">البصرة</option>
+  </select>
+
+  <button class="action-btn" onclick="showTimes()">عرض الإمساكية</button>
+
+  <div class="box" id="timesBox">
+    <table>
+      <tr><td>الفجر</td><td id="fajr"></td></tr>
+      <tr><td>الشروق</td><td id="sunrise"></td></tr>
+      <tr><td>الظهر</td><td id="dhuhr"></td></tr>
+      <tr><td>العصر</td><td id="asr"></td></tr>
+      <tr><td>المغرب</td><td id="maghrib"></td></tr>
+      <tr><td>العشاء</td><td id="isha"></td></tr>
+    </table>
   </div>
 
-  <!-- الإمساكية -->
-  <div id="imsakiyaSection" style="display:none">
+  <button class="action-btn back-btn" onclick="goHome()">⬅ رجوع</button>
+</div>
 
-    <label>اختر المحافظة</label>
-    <select id="city">
-      <option value="">— اختر —</option>
-      <option value="najaf">النجف</option>
-      <option value="karbala">كربلاء</option>
-      <option value="baghdad">بغداد</option>
-      <option value="basra">البصرة</option>
-    </select>
+<!-- دعاء اليوم -->
+<div id="duasSection" class="box">
+  <div id="duaText"></div>
+  <button class="action-btn back-btn" onclick="goHome()">⬅ رجوع</button>
+</div>
 
-    <button class="action-btn" onclick="showTimes()">عرض الإمساكية</button>
+<!-- أعمال الشهر -->
+<div id="aamalSection" class="box">
+  <h3>📿 اختر اليوم</h3>
+  <div id="daysList"></div>
+  <button class="action-btn back-btn" onclick="goHome()">⬅ رجوع</button>
+</div>
 
-    <div class="table-box" id="timesBox">
-      <table>
-        <tr><td>الفجر</td><td id="fajr"></td></tr>
-        <tr><td>الشروق</td><td id="sunrise"></td></tr>
-        <tr><td>الظهر</td><td id="dhuhr"></td></tr>
-        <tr><td>العصر</td><td id="asr"></td></tr>
-        <tr><td>المغرب</td><td id="maghrib"></td></tr>
-        <tr><td>العشاء</td><td id="isha"></td></tr>
-      </table>
-    </div>
-
-    <button class="action-btn back-btn" onclick="goHome()">⬅ الرجوع للقائمة الرئيسية</button>
-  </div>
-
-  <!-- دعاء اليوم -->
-  <div class="dua-box" id="duasSection">
-    <div class="day-label" id="dayNumber"></div>
-    <div class="dua" id="duaText"></div>
-
-    <button class="action-btn back-btn" onclick="goHome()">⬅ الرجوع للقائمة الرئيسية</button>
-  </div>
+<!-- تفاصيل الأعمال -->
+<div id="aamalDetails" class="box">
+  <h3 id="aamalTitle"></h3>
+  <div id="aamalText"></div>
+  <button class="action-btn back-btn" onclick="openAamal()">⬅ رجوع للأيام</button>
+</div>
 
 </div>
 
 <script>
-  /* بيانات الأوقات (تجريبية) */
-  const data = {
-    najaf:    {fajr:"04:55", sunrise:"06:15", dhuhr:"12:05", asr:"15:30", maghrib:"18:00", isha:"19:15"},
-    karbala: {fajr:"04:57", sunrise:"06:17", dhuhr:"12:06", asr:"15:32", maghrib:"18:02", isha:"19:17"},
-    baghdad: {fajr:"04:45", sunrise:"06:05", dhuhr:"12:00", asr:"15:25", maghrib:"17:55", isha:"19:10"},
-    basra:   {fajr:"04:40", sunrise:"06:00", dhuhr:"11:55", asr:"15:20", maghrib:"17:50", isha:"19:05"}
-  };
+const data={
+  najaf:{fajr:"04:55",sunrise:"06:15",dhuhr:"12:05",asr:"15:30",maghrib:"18:00",isha:"19:15"},
+  karbala:{fajr:"04:57",sunrise:"06:17",dhuhr:"12:06",asr:"15:32",maghrib:"18:02",isha:"19:17"},
+  baghdad:{fajr:"04:45",sunrise:"06:05",dhuhr:"12:00",asr:"15:25",maghrib:"17:55",isha:"19:10"},
+  basra:{fajr:"04:40",sunrise:"06:00",dhuhr:"11:55",asr:"15:20",maghrib:"17:50",isha:"19:05"}
+};
 
-  /* أدعية رمضان (مثال) */
-  const duas = [
-    "اللهم اجعل صيامي فيه صيام الصائمين، وقيامي فيه قيام القائمين.",
-    "اللهم قرّبني فيه إلى مرضاتك، وجنبني فيه من سخطك.",
-    "اللهم ارزقني فيه الذهن والتنبيه، وباعدني فيه من السفاهة.",
-    "اللهم قوّني فيه على إقامة أمرك، وأذقني فيه حلاوة ذكرك.",
-    "اللهم اجعلني فيه من المستغفرين، واجعلني فيه من عبادك الصالحين."
-  ];
+const duas=[
+"اللهم اجعل صيامي فيه صيام الصائمين...",
+"اللهم قرّبني فيه إلى مرضاتك...",
+"اللهم ارزقني فيه الذهن والتنبيه..."
+];
 
-  function openImsakiya() {
-    hideAll();
-    document.getElementById("imsakiyaSection").style.display = "block";
-  }
+const aamal=[];
+for(let i=1;i<=30;i++){
+  aamal.push({
+    day:i,
+    text:`📿 أعمال اليوم ${i}<br><br>
+• الغُسل<br>
+• صلاة ركعتين<br>
+• قراءة سورة الحمد 7 مرات<br>
+• الاستغفار 100 مرة<br>
+• الدعاء المخصوص لليوم ${i}`
+  });
+}
 
-  function openDuas() {
-    hideAll();
-    document.getElementById("duasSection").style.display = "block";
+function hideAll(){
+  ["mainMenu","imsakiyaSection","duasSection","aamalSection","aamalDetails","timesBox"]
+  .forEach(id=>document.getElementById(id).style.display="none");
+}
 
-    const today = new Date();
-    const day = today.getDate();
-    const index = (day - 1) % duas.length;
+function goHome(){hideAll();mainMenu.style.display="flex";}
 
-    document.getElementById("dayNumber").innerText = "دعاء اليوم " + day;
-    document.getElementById("duaText").innerText = duas[index];
-  }
+function openImsakiya(){hideAll();imsakiyaSection.style.display="block";}
+function openDuas(){hideAll();duasSection.style.display="block";duaText.innerHTML=duas[new Date().getDate()%duas.length];}
 
-  function showTimes() {
-    const city = document.getElementById("city").value;
-    if (!city) {
-      alert("اختر المحافظة أولاً");
-      return;
-    }
+function openAamal(){
+  hideAll();
+  aamalSection.style.display="block";
+  daysList.innerHTML="";
+  aamal.forEach(d=>{
+    let b=document.createElement("button");
+    b.className="action-btn day-btn";
+    b.innerText="أعمال اليوم "+d.day;
+    b.onclick=()=>showAamal(d.day);
+    daysList.appendChild(b);
+  });
+}
 
-    document.getElementById("timesBox").style.display = "block";
-    document.getElementById("fajr").innerText    = data[city].fajr;
-    document.getElementById("sunrise").innerText = data[city].sunrise;
-    document.getElementById("dhuhr").innerText   = data[city].dhuhr;
-    document.getElementById("asr").innerText     = data[city].asr;
-    document.getElementById("maghrib").innerText = data[city].maghrib;
-    document.getElementById("isha").innerText    = data[city].isha;
-  }
+function showAamal(day){
+  hideAll();
+  aamalDetails.style.display="block";
+  const d=aamal.find(x=>x.day===day);
+  aamalTitle.innerText="أعمال اليوم "+day;
+  aamalText.innerHTML=d.text;
+}
 
-  function goHome() {
-    hideAll();
-    document.getElementById("mainMenu").style.display = "flex";
-  }
-
-  function hideAll() {
-    document.getElementById("mainMenu").style.display = "none";
-    document.getElementById("imsakiyaSection").style.display = "none";
-    document.getElementById("duasSection").style.display = "none";
-    document.getElementById("timesBox").style.display = "none";
-  }
+function showTimes(){
+  const c=city.value;
+  if(!c)return alert("اختر المحافظة");
+  timesBox.style.display="block";
+  fajr.innerText=data[c].fajr;
+  sunrise.innerText=data[c].sunrise;
+  dhuhr.innerText=data[c].dhuhr;
+  asr.innerText=data[c].asr;
+  maghrib.innerText=data[c].maghrib;
+  isha.innerText=data[c].isha;
+}
 </script>
 
 </body>
