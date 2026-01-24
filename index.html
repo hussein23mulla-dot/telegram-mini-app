@@ -19,19 +19,19 @@
 
     h1 {
       text-align: center;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
 
-    /* أزرار التنقل */
+    /* أزرار القائمة الرئيسية */
     .nav-buttons {
       display: flex;
-      gap: 10px;
+      gap: 12px;
       margin-bottom: 20px;
     }
 
     .nav-buttons button {
       flex: 1;
-      padding: 10px;
+      padding: 12px;
       font-size: 15px;
       border-radius: 10px;
       border: none;
@@ -57,6 +57,12 @@
       background: #1abc9c;
       font-weight: bold;
       cursor: pointer;
+    }
+
+    .back-btn {
+      background: #607d8b;
+      color: #fff;
+      margin-top: 15px;
     }
 
     .table-box, .dua-box {
@@ -99,13 +105,14 @@
 
   <h1>🌙 التطبيق الرمضاني</h1>
 
-  <div class="nav-buttons">
-    <button class="imsakiya-btn" onclick="showImsakiya()">الإمساكية</button>
-    <button class="dua-btn" onclick="showDuas()">دعاء اليوم</button>
+  <!-- القائمة الرئيسية -->
+  <div class="nav-buttons" id="mainMenu">
+    <button class="imsakiya-btn" onclick="openImsakiya()">الإمساكية</button>
+    <button class="dua-btn" onclick="openDuas()">دعاء اليوم</button>
   </div>
 
   <!-- الإمساكية -->
-  <div id="imsakiyaSection">
+  <div id="imsakiyaSection" style="display:none">
 
     <label>اختر المحافظة</label>
     <select id="city">
@@ -129,18 +136,21 @@
       </table>
     </div>
 
+    <button class="action-btn back-btn" onclick="goHome()">⬅ الرجوع للقائمة الرئيسية</button>
   </div>
 
   <!-- دعاء اليوم -->
   <div class="dua-box" id="duasSection">
     <div class="day-label" id="dayNumber"></div>
     <div class="dua" id="duaText"></div>
+
+    <button class="action-btn back-btn" onclick="goHome()">⬅ الرجوع للقائمة الرئيسية</button>
   </div>
 
 </div>
 
 <script>
-  /* أوقات الصلاة */
+  /* بيانات الأوقات (تجريبية) */
   const data = {
     najaf:    {fajr:"04:55", sunrise:"06:15", dhuhr:"12:05", asr:"15:30", maghrib:"18:00", isha:"19:15"},
     karbala: {fajr:"04:57", sunrise:"06:17", dhuhr:"12:06", asr:"15:32", maghrib:"18:02", isha:"19:17"},
@@ -148,7 +158,7 @@
     basra:   {fajr:"04:40", sunrise:"06:00", dhuhr:"11:55", asr:"15:20", maghrib:"17:50", isha:"19:05"}
   };
 
-  /* أدعية رمضان (مثال أول 5 أيام) */
+  /* أدعية رمضان (مثال) */
   const duas = [
     "اللهم اجعل صيامي فيه صيام الصائمين، وقيامي فيه قيام القائمين.",
     "اللهم قرّبني فيه إلى مرضاتك، وجنبني فيه من سخطك.",
@@ -156,6 +166,23 @@
     "اللهم قوّني فيه على إقامة أمرك، وأذقني فيه حلاوة ذكرك.",
     "اللهم اجعلني فيه من المستغفرين، واجعلني فيه من عبادك الصالحين."
   ];
+
+  function openImsakiya() {
+    hideAll();
+    document.getElementById("imsakiyaSection").style.display = "block";
+  }
+
+  function openDuas() {
+    hideAll();
+    document.getElementById("duasSection").style.display = "block";
+
+    const today = new Date();
+    const day = today.getDate();
+    const index = (day - 1) % duas.length;
+
+    document.getElementById("dayNumber").innerText = "دعاء اليوم " + day;
+    document.getElementById("duaText").innerText = duas[index];
+  }
 
   function showTimes() {
     const city = document.getElementById("city").value;
@@ -173,21 +200,16 @@
     document.getElementById("isha").innerText    = data[city].isha;
   }
 
-  function showImsakiya() {
-    document.getElementById("imsakiyaSection").style.display = "block";
-    document.getElementById("duasSection").style.display = "none";
+  function goHome() {
+    hideAll();
+    document.getElementById("mainMenu").style.display = "flex";
   }
 
-  function showDuas() {
+  function hideAll() {
+    document.getElementById("mainMenu").style.display = "none";
     document.getElementById("imsakiyaSection").style.display = "none";
-    document.getElementById("duasSection").style.display = "block";
-
-    const today = new Date();
-    const ramadanDay = today.getDate(); // بسيط، نطوّره لاحقاً بدقة
-
-    const index = (ramadanDay - 1) % duas.length;
-    document.getElementById("dayNumber").innerText = "دعاء اليوم " + ramadanDay;
-    document.getElementById("duaText").innerText = duas[index];
+    document.getElementById("duasSection").style.display = "none";
+    document.getElementById("timesBox").style.display = "none";
   }
 </script>
 
