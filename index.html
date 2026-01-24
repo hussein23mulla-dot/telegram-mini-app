@@ -19,10 +19,24 @@
 
     h1 {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
 
-    select, button {
+    .nav-buttons button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 10px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .imsakiya-btn { background: #f9a825; }
+    .dua-btn { background: #9b59b6; color: #fff; }
+
+    select, .action-btn {
       width: 100%;
       padding: 14px;
       margin-top: 15px;
@@ -31,23 +45,15 @@
       border: none;
     }
 
-    select {
-      background: #ffffff;
-      color: #000;
-    }
+    select { background: #fff; color: #000; }
 
-    button {
-      background: #f9a825;
-      color: #000;
+    .action-btn {
+      background: #1abc9c;
       font-weight: bold;
       cursor: pointer;
     }
 
-    button:hover {
-      opacity: 0.9;
-    }
-
-    .table-box {
+    .table-box, .dua-box {
       margin-top: 25px;
       background: rgba(255,255,255,0.1);
       border-radius: 12px;
@@ -68,12 +74,26 @@
     td:last-child {
       text-align: left;
     }
+
+    .dua {
+      margin-bottom: 15px;
+      line-height: 1.8;
+    }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <h1>🕌 الإمساكية</h1>
+<div class="container">
+
+  <h1>🕌 التطبيق الرمضاني</h1>
+
+  <div class="nav-buttons">
+    <button class="imsakiya-btn" onclick="showImsakiya()">🕌 الإمساكية</button>
+    <button class="dua-btn" onclick="showDuas()">🤲 أدعية الشهر الكريم</button>
+  </div>
+
+  <!-- الإمساكية -->
+  <div id="imsakiyaSection">
 
     <label>اختر المحافظة</label>
     <select id="city">
@@ -84,7 +104,7 @@
       <option value="basra">البصرة</option>
     </select>
 
-    <button onclick="showTimes()">عرض الإمساكية</button>
+    <button class="action-btn" onclick="showTimes()">عرض الإمساكية</button>
 
     <div class="table-box" id="timesBox">
       <table>
@@ -96,7 +116,20 @@
         <tr><td>العشاء</td><td id="isha"></td></tr>
       </table>
     </div>
+
   </div>
+
+  <!-- الأدعية -->
+  <div class="dua-box" id="duasSection">
+    <h2>🤲 أدعية شهر رمضان</h2>
+
+    <div class="dua">اللهم اجعل صيامي فيه صيام الصائمين، وقيامي فيه قيام القائمين.</div>
+    <div class="dua">اللهم قرّبني فيه إلى مرضاتك، وجنبني فيه من سخطك.</div>
+    <div class="dua">اللهم ارزقني فيه الذهن والتنبيه، وباعدني فيه من السفاهة والتمويه.</div>
+
+  </div>
+
+</div>
 
 <script>
   const data = {
@@ -120,6 +153,16 @@
     document.getElementById("asr").innerText     = data[city].asr;
     document.getElementById("maghrib").innerText = data[city].maghrib;
     document.getElementById("isha").innerText    = data[city].isha;
+  }
+
+  function showImsakiya() {
+    document.getElementById("imsakiyaSection").style.display = "block";
+    document.getElementById("duasSection").style.display = "none";
+  }
+
+  function showDuas() {
+    document.getElementById("imsakiyaSection").style.display = "none";
+    document.getElementById("duasSection").style.display = "block";
   }
 </script>
 
