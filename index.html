@@ -1,14 +1,127 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>Telegram Mini App</title>
+  <title>الإمساكية</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-</head>
-<body style="text-align:center;font-family:sans-serif">
 
-<h2>📿 Mini App شغال</h2>
-<p>إذا تشوف هذا النص، ففيرسل تمام ✅</p>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #fff;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    select, button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 15px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: none;
+    }
+
+    select {
+      background: #ffffff;
+      color: #000;
+    }
+
+    button {
+      background: #f9a825;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .table-box {
+      margin-top: 25px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 15px;
+      display: none;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    td {
+      padding: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+
+    td:last-child {
+      text-align: left;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>🕌 الإمساكية</h1>
+
+    <label>اختر المحافظة</label>
+    <select id="city">
+      <option value="">— اختر —</option>
+      <option value="najaf">النجف</option>
+      <option value="karbala">كربلاء</option>
+      <option value="baghdad">بغداد</option>
+      <option value="basra">البصرة</option>
+    </select>
+
+    <button onclick="showTimes()">عرض الإمساكية</button>
+
+    <div class="table-box" id="timesBox">
+      <table>
+        <tr><td>الفجر</td><td id="fajr"></td></tr>
+        <tr><td>الشروق</td><td id="sunrise"></td></tr>
+        <tr><td>الظهر</td><td id="dhuhr"></td></tr>
+        <tr><td>العصر</td><td id="asr"></td></tr>
+        <tr><td>المغرب</td><td id="maghrib"></td></tr>
+        <tr><td>العشاء</td><td id="isha"></td></tr>
+      </table>
+    </div>
+  </div>
+
+<script>
+  const data = {
+    najaf:    {fajr:"04:55", sunrise:"06:15", dhuhr:"12:05", asr:"15:30", maghrib:"18:00", isha:"19:15"},
+    karbala: {fajr:"04:57", sunrise:"06:17", dhuhr:"12:06", asr:"15:32", maghrib:"18:02", isha:"19:17"},
+    baghdad: {fajr:"04:45", sunrise:"06:05", dhuhr:"12:00", asr:"15:25", maghrib:"17:55", isha:"19:10"},
+    basra:   {fajr:"04:40", sunrise:"06:00", dhuhr:"11:55", asr:"15:20", maghrib:"17:50", isha:"19:05"}
+  };
+
+  function showTimes() {
+    const city = document.getElementById("city").value;
+    if (!city) {
+      alert("اختر المحافظة أولاً");
+      return;
+    }
+
+    document.getElementById("timesBox").style.display = "block";
+    document.getElementById("fajr").innerText    = data[city].fajr;
+    document.getElementById("sunrise").innerText = data[city].sunrise;
+    document.getElementById("dhuhr").innerText   = data[city].dhuhr;
+    document.getElementById("asr").innerText     = data[city].asr;
+    document.getElementById("maghrib").innerText = data[city].maghrib;
+    document.getElementById("isha").innerText    = data[city].isha;
+  }
+</script>
 
 </body>
 </html>
