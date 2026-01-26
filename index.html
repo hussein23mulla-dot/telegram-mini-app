@@ -90,27 +90,23 @@ td:last-child{text-align:left}
     <option value="basra">البصرة</option>
   </select>
 
-  <!-- خيارات الإمساكية -->
   <div id="imsakiyaMenu" style="display:none">
     <button class="action-btn" onclick="showToday()">📅 إمساكية اليوم</button>
     <button class="action-btn" onclick="showMonth()">🗓️ إمساكية الشهر</button>
     <button class="action-btn back-btn" onclick="openImsakiya()">⬅ رجوع</button>
   </div>
 
-  <!-- إمساكية اليوم -->
   <div class="box" id="timesBox">
     <table>
+      <tr><td>الإمساك</td><td id="sunrise"></td></tr>
       <tr><td>الفجر</td><td id="fajr"></td></tr>
-      <tr><td>الشروق</td><td id="sunrise"></td></tr>
       <tr><td>الظهر</td><td id="dhuhr"></td></tr>
-      <tr><td>العصر</td><td id="asr"></td></tr>
       <tr><td>المغرب</td><td id="maghrib"></td></tr>
-      <tr><td>العشاء</td><td id="isha"></td></tr>
+      <tr><td>منتصف الليل</td><td id="isha"></td></tr>
     </table>
     <button class="action-btn back-btn" onclick="showImsakiyaMenu()">⬅ رجوع</button>
   </div>
 
-  <!-- إمساكية الشهر -->
   <div class="box" id="monthBox">
     <div id="monthList"></div>
     <button class="action-btn back-btn" onclick="showImsakiyaMenu()">⬅ رجوع</button>
@@ -120,44 +116,20 @@ td:last-child{text-align:left}
 </div>
 
 <!-- بقية الأقسام كما هي -->
-<div id="duasSection" class="box">
-  <div id="duaText"></div>
-  <button class="action-btn back-btn" onclick="goHome()">⬅ رجوع</button>
-</div>
-
-<div id="aamalSection" class="box">
-  <h3>📿 اختر اليوم</h3>
-  <div id="daysList"></div>
-  <button class="action-btn back-btn" onclick="goHome()">⬅ رجوع</button>
-</div>
-
-<div id="aamalDetails" class="box">
-  <h3 id="aamalTitle"></h3>
-  <div id="aamalText"></div>
-  <button class="action-btn back-btn" onclick="openAamal()">⬅ رجوع</button>
-</div>
-
-<div id="eventsSection" class="box">
-  <h3>📅 مناسبات شهر رمضان</h3>
-  <div id="eventsList"></div>
-  <button class="action-btn back-btn" onclick="goHome()">⬅ رجوع</button>
-</div>
-
-<div id="ahkamSection" class="box">
-  <h3>⚖️ أهم الأحكام الشرعية</h3>
-  <div id="ahkamList"></div>
-  <button class="action-btn back-btn" onclick="goHome()">⬅ رجوع</button>
-</div>
+<div id="duasSection" class="box"><div id="duaText"></div><button class="action-btn back-btn" onclick="goHome()">⬅ رجوع</button></div>
+<div id="aamalSection" class="box"><h3>📿 اختر اليوم</h3><div id="daysList"></div><button class="action-btn back-btn" onclick="goHome()">⬅ رجوع</button></div>
+<div id="aamalDetails" class="box"><h3 id="aamalTitle"></h3><div id="aamalText"></div><button class="action-btn back-btn" onclick="openAamal()">⬅ رجوع</button></div>
+<div id="eventsSection" class="box"><h3>📅 مناسبات شهر رمضان</h3><div id="eventsList"></div><button class="action-btn back-btn" onclick="goHome()">⬅ رجوع</button></div>
+<div id="ahkamSection" class="box"><h3>⚖️ أهم الأحكام الشرعية</h3><div id="ahkamList"></div><button class="action-btn back-btn" onclick="goHome()">⬅ رجوع</button></div>
 
 </div>
 
 <script>
-const data={
-  najaf:{fajr:"04:55",sunrise:"06:15",dhuhr:"12:05",asr:"15:30",maghrib:"18:00",isha:"19:15"},
-  karbala:{fajr:"04:57",sunrise:"06:17",dhuhr:"12:06",asr:"15:32",maghrib:"18:02",isha:"19:17"},
-  baghdad:{fajr:"04:45",sunrise:"06:05",dhuhr:"12:00",asr:"15:25",maghrib:"17:55",isha:"19:10"},
-  basra:{fajr:"04:40",sunrise:"06:00",dhuhr:"11:55",asr:"15:20",maghrib:"17:50",isha:"19:05"}
-};
+let imsakiyaData=[];
+
+fetch("imsakiya.json")
+.then(res=>res.json())
+.then(data=>imsakiyaData=data);
 
 function hideAll(){
 ["mainMenu","imsakiyaSection","duasSection","aamalSection","aamalDetails","eventsSection","ahkamSection","timesBox","monthBox","imsakiyaMenu"]
@@ -177,22 +149,34 @@ function showImsakiyaMenu(){
 function showToday(){
   imsakiyaMenu.style.display="none";
   timesBox.style.display="block";
-  const c=city.value;
-  fajr.innerText=data[c].fajr;
-  sunrise.innerText=data[c].sunrise;
-  dhuhr.innerText=data[c].dhuhr;
-  asr.innerText=data[c].asr;
-  maghrib.innerText=data[c].maghrib;
-  isha.innerText=data[c].isha;
+
+  const today=new Date().toISOString().split("T")[0];
+  const cityName=city.options[city.selectedIndex].text;
+
+  const row=imsakiyaData.find(r=>r.المحافظة===cityName && r.التاريخ===today);
+  if(!row){alert("لا توجد بيانات لهذا اليوم");return;}
+
+  sunrise.innerText=row.الامساك;
+  fajr.innerText=row.الفجر;
+  dhuhr.innerText=row.الظهر;
+  maghrib.innerText=row.المغرب;
+  isha.innerText=row["منتصف الليل"];
 }
 
 function showMonth(){
   imsakiyaMenu.style.display="none";
   monthBox.style.display="block";
   monthList.innerHTML="";
-  for(let i=1;i<=30;i++){
-    monthList.innerHTML+=`<div class="box">اليوم ${i} – فجر ${data[city.value].fajr} | مغرب ${data[city.value].maghrib}</div>`;
-  }
+
+  const cityName=city.options[city.selectedIndex].text;
+  imsakiyaData.filter(r=>r.المحافظة===cityName)
+  .forEach(r=>{
+    monthList.innerHTML+=`
+      <div class="box">
+        🌙 ${r.رمضان} رمضان – ${r.التاريخ}<br>
+        إمساك ${r.الامساك} | فجر ${r.الفجر} | مغرب ${r.المغرب}
+      </div>`;
+  });
 }
 </script>
 
