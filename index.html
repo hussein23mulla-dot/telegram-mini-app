@@ -18,7 +18,7 @@ h1{text-align:center;margin-bottom:20px}
 .nav-buttons{
   display:flex;
   gap:10px;
-  margin-bottom:20px
+  margin-bottom:15px
 }
 .nav-buttons button{
   flex:1;
@@ -32,6 +32,8 @@ h1{text-align:center;margin-bottom:20px}
 .imsakiya-btn{background:#f9a825}
 .dua-btn{background:#9b59b6;color:#fff}
 .aamal-btn{background:#03a9f4;color:#fff}
+.events-btn{background:#e67e22;color:#fff}
+.ahkam-btn{background:#4caf50;color:#fff}
 
 select,.action-btn{
   width:100%;
@@ -77,6 +79,11 @@ td:last-child{text-align:left}
   <button class="aamal-btn" onclick="openAamal()">أعمال الشهر</button>
 </div>
 
+<div class="nav-buttons">
+  <button class="events-btn" onclick="openEvents()">مناسبات الشهر</button>
+  <button class="ahkam-btn" onclick="openAhkam()">أحكام الصيام</button>
+</div>
+
 <!-- الإمساكية -->
 <div id="imsakiyaSection" class="box">
   <label>اختر المحافظة</label>
@@ -117,11 +124,24 @@ td:last-child{text-align:left}
   <button class="action-btn back-btn" onclick="goHome()">⬅ رجوع</button>
 </div>
 
-<!-- تفاصيل الأعمال -->
 <div id="aamalDetails" class="box">
   <h3 id="aamalTitle"></h3>
   <div id="aamalText"></div>
-  <button class="action-btn back-btn" onclick="openAamal()">⬅ رجوع للأيام</button>
+  <button class="action-btn back-btn" onclick="openAamal()">⬅ رجوع</button>
+</div>
+
+<!-- مناسبات الشهر -->
+<div id="eventsSection" class="box">
+  <h3>📅 مناسبات شهر رمضان</h3>
+  <div id="eventsList"></div>
+  <button class="action-btn back-btn" onclick="goHome()">⬅ رجوع</button>
+</div>
+
+<!-- الأحكام -->
+<div id="ahkamSection" class="box">
+  <h3>⚖️ أهم الأحكام الشرعية</h3>
+  <div id="ahkamList"></div>
+  <button class="action-btn back-btn" onclick="goHome()">⬅ رجوع</button>
 </div>
 
 </div>
@@ -135,38 +155,43 @@ const data={
 };
 
 const duas=[
-"اللهم اجعل صيامي فيه صيام الصائمين...",
-"اللهم قرّبني فيه إلى مرضاتك...",
+"اللهم اجعل صيامي فيه صيام الصائمين، وقيامي فيه قيام القانتين...",
+"اللهم قرّبني فيه إلى مرضاتك، وجنّبني فيه من سخطك...",
 "اللهم ارزقني فيه الذهن والتنبيه..."
+];
+
+const events=[
+{day:1,title:"بداية شهر رمضان"},
+{day:3,title:"وفاة السيدة خديجة (ع)"},
+{day:15,title:"ولادة الإمام الحسن (ع)"},
+{day:19,title:"ضربة أمير المؤمنين (ع)"},
+{day:21,title:"استشهاد أمير المؤمنين (ع)"},
+{day:27,title:"ليلة القدر المحتملة"}
+];
+
+const ahkam=[
+"✔️ الصوم واجب على كل بالغ عاقل قادر",
+"✔️ يبطل الصوم بالأكل أو الشرب عمداً",
+"✔️ يجوز الإفطار للمريض والمسافر",
+"✔️ نية الصوم تكون قبل الفجر",
+"✔️ من أفطر عمداً فعليه القضاء والكفارة"
 ];
 
 const aamal=[];
 for(let i=1;i<=30;i++){
-  aamal.push({
-    day:i,
-    text:`📿 أعمال اليوم ${i}<br><br>
-• الغُسل<br>
-• صلاة ركعتين<br>
-• قراءة سورة الحمد 7 مرات<br>
-• الاستغفار 100 مرة<br>
-• الدعاء المخصوص لليوم ${i}`
-  });
+  aamal.push({day:i,text:`📿 أعمال اليوم ${i}<br><br>• الغُسل<br>• صلاة ركعتين<br>• قراءة الحمد 7 مرات<br>• الاستغفار 100 مرة`});
 }
 
 function hideAll(){
-  ["mainMenu","imsakiyaSection","duasSection","aamalSection","aamalDetails","timesBox"]
-  .forEach(id=>document.getElementById(id).style.display="none");
+["mainMenu","imsakiyaSection","duasSection","aamalSection","aamalDetails","eventsSection","ahkamSection","timesBox"]
+.forEach(id=>document.getElementById(id).style.display="none");
 }
 
 function goHome(){hideAll();mainMenu.style.display="flex";}
-
 function openImsakiya(){hideAll();imsakiyaSection.style.display="block";}
 function openDuas(){hideAll();duasSection.style.display="block";duaText.innerHTML=duas[new Date().getDate()%duas.length];}
-
 function openAamal(){
-  hideAll();
-  aamalSection.style.display="block";
-  daysList.innerHTML="";
+  hideAll();aamalSection.style.display="block";daysList.innerHTML="";
   aamal.forEach(d=>{
     let b=document.createElement("button");
     b.className="action-btn day-btn";
@@ -175,15 +200,30 @@ function openAamal(){
     daysList.appendChild(b);
   });
 }
-
 function showAamal(day){
-  hideAll();
-  aamalDetails.style.display="block";
+  hideAll();aamalDetails.style.display="block";
   const d=aamal.find(x=>x.day===day);
   aamalTitle.innerText="أعمال اليوم "+day;
   aamalText.innerHTML=d.text;
 }
-
+function openEvents(){
+  hideAll();eventsSection.style.display="block";eventsList.innerHTML="";
+  events.forEach(e=>{
+    let div=document.createElement("div");
+    div.className="box";
+    div.innerHTML=`📌 اليوم ${e.day}<br>${e.title}`;
+    eventsList.appendChild(div);
+  });
+}
+function openAhkam(){
+  hideAll();ahkamSection.style.display="block";ahkamList.innerHTML="";
+  ahkam.forEach(h=>{
+    let div=document.createElement("div");
+    div.className="box";
+    div.innerHTML=h;
+    ahkamList.appendChild(div);
+  });
+}
 function showTimes(){
   const c=city.value;
   if(!c)return alert("اختر المحافظة");
