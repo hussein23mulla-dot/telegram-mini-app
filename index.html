@@ -115,7 +115,7 @@ td:last-child{text-align:left}
   <button class="action-btn back-btn" onclick="goHome()">⬅ رجوع للرئيسية</button>
 </div>
 
-<!-- بقية الأقسام كما هي -->
+<!-- باقي الأقسام -->
 <div id="duasSection" class="box"><div id="duaText"></div><button class="action-btn back-btn" onclick="goHome()">⬅ رجوع</button></div>
 <div id="aamalSection" class="box"><h3>📿 اختر اليوم</h3><div id="daysList"></div><button class="action-btn back-btn" onclick="goHome()">⬅ رجوع</button></div>
 <div id="aamalDetails" class="box"><h3 id="aamalTitle"></h3><div id="aamalText"></div><button class="action-btn back-btn" onclick="openAamal()">⬅ رجوع</button></div>
@@ -127,6 +127,7 @@ td:last-child{text-align:left}
 <script>
 let imsakiyaData=[];
 
+/* تحميل ملف الإكسل المحوّل إلى JSON */
 fetch("imsakiya.json")
 .then(res=>res.json())
 .then(data=>imsakiyaData=data);
@@ -150,32 +151,51 @@ function showToday(){
   imsakiyaMenu.style.display="none";
   timesBox.style.display="block";
 
-  const today=new Date().toISOString().split("T")[0];
-  const cityName=city.options[city.selectedIndex].text;
+  const today = new Date().toISOString().split("T")[0];
+  const cityName = city.options[city.selectedIndex].text.trim();
 
-  const row=imsakiyaData.find(r=>r.المحافظة===cityName && r.التاريخ===today);
-  if(!row){alert("لا توجد بيانات لهذا اليوم");return;}
+  const row = imsakiyaData.find(r =>
+    r.المحافظة.trim() === cityName &&
+    r.التاريخ === today
+  );
 
-  sunrise.innerText=row.الامساك;
-  fajr.innerText=row.الفجر;
-  dhuhr.innerText=row.الظهر;
-  maghrib.innerText=row.المغرب;
-  isha.innerText=row["منتصف الليل"];
+  if(!row){
+    alert("لا توجد بيانات لهذا اليوم");
+    return;
+  }
+
+  sunrise.innerText = row.الامساك;
+  fajr.innerText = row.الفجر;
+  dhuhr.innerText = row.الظهر;
+  maghrib.innerText = row.المغرب;
+  isha.innerText = row["منتصف الليل"];
 }
 
 function showMonth(){
+  if(imsakiyaData.length===0){
+    alert("البيانات لم تُحمّل بعد");
+    return;
+  }
+
   imsakiyaMenu.style.display="none";
   monthBox.style.display="block";
   monthList.innerHTML="";
 
-  const cityName=city.options[city.selectedIndex].text;
-  imsakiyaData.filter(r=>r.المحافظة===cityName)
-  .forEach(r=>{
-    monthList.innerHTML+=`
+  const cityName = city.options[city.selectedIndex].text.trim();
+  const rows = imsakiyaData.filter(r => r.المحافظة.trim() === cityName);
+
+  if(rows.length===0){
+    monthList.innerHTML="<div class='box'>لا توجد بيانات لهذه المحافظة</div>";
+    return;
+  }
+
+  rows.forEach(r=>{
+    monthList.innerHTML += `
       <div class="box">
         🌙 ${r.رمضان} رمضان – ${r.التاريخ}<br>
         إمساك ${r.الامساك} | فجر ${r.الفجر} | مغرب ${r.المغرب}
-      </div>`;
+      </div>
+    `;
   });
 }
 </script>
